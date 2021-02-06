@@ -2,14 +2,20 @@
 Treehouse FSJS Techdegree:
 project 1 - A Random Quote Generator
 ******************************************/
+/*jshint esversion: 8*/
 
 
-/*** 
- * `quotes` array 
- ***/
-
-quotes = [
-  {
+/**
+ * quotes
+ * Array of objects.
+    * Object properties:
+      * quote {string}
+      * source {string}
+      * citation {string}[optional]
+      * year {num}[optional]
+      * genre {string}
+**/
+const quotes = [{
     quote: `Do you think the universe fights for souls to be together? Some things are too strange and strong to be coincidences.`,
     source: `Emery Allen`,
     citation: `Become`,
@@ -44,44 +50,65 @@ quotes = [
 ];
 
 
-/***
- * `getRandomQuote` function
- ***/
-function getRandomQuote(){
-let randomQuote = quotes[Math.floor(Math.random()*quotes.length)];
-return randomQuote;
+/*** 
+ * getRandomQuote
+ *  function to generate random object selection (using Math.random method) from array 'quotes'
+ *    returns 'randomQuote' object 
+ */
+function getRandomQuote() {
+  let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  return randomQuote;
 }
 
 
-
-
 /***
- * `printQuote` function
+ * printQuote
+ *  function to define html content for 'quote-box' div and paint to screen
+ *    secondary function to change body background colour to random colour for each new returned quote object
  ***/
-function printQuote(){
+
+function printQuote() {
+  //define variable for HTML content
+  let quoteHTML;
+
+  //get a random quote from the quotes array-of-objects. Return quote object
   let selectedQuote = getRandomQuote();
-let quoteHTML = `<p class="quote">${selectedQuote.quote}</p>`;
 
-if (selectedQuote.citation){
-  quoteHTML+=`<span class="citation">${selectedQuote.citation}</span>`;  
-};
-if (selectedQuote.year){
-  quoteHTML+=`<span class="year">${selectedQuote.year}</span>`;
-};
-quoteHTML+=`<p class="source">${selectedQuote.source}</p>`+`<p class="citation">${selectedQuote.genre}</p>`
+  //build HTML content using properties from returned quote object
+  quoteHTML = `<p class="quote">${selectedQuote.quote}</p>`;
+  quoteHTML += `<p class="source">${selectedQuote.source}`;
 
-document.getElementById('quote-box').innerHTML = quoteHTML;
+  //if available, concat citation and year
+  if (selectedQuote.citation) {
+    quoteHTML += `<span class="citation">${selectedQuote.citation}</span>`;
+  }
+  if (selectedQuote.year) {
+    quoteHTML += `<span class="year">${selectedQuote.year}</span>`;
+  }
+  //concat genre and close source p tag
+  quoteHTML += `<span class="genre">${selectedQuote.genre}</span></p>`;
 
+  //Paint the screen text
+  document.getElementById('quote-box').innerHTML = quoteHTML;
 
-document.querySelector('body').style.backgroundColor = `rgb(${randomColorFunc()}, ${randomColorFunc()}, ${randomColorFunc()})`;
+  //Paint the screen background with random colour
+  document.querySelector('body').style.backgroundColor = `rgb(${randomColorFunc()}, ${randomColorFunc()}, ${randomColorFunc()})`;
 }
 
-const randomColorFunc = function(){
-  let randomRGB = (Math.floor(Math.random()*255));
+/***
+ * randomColorFunc
+ *  function to randomly assign an integer RGB compliant number to variable and return
+ ***/
+const randomColorFunc = function () {
+  let randomRGB = (Math.floor(Math.random() * 255));
   return randomRGB;
-  };
+};
 
-
-
-
+/***
+ * load-quote div event listener - callback printQuote to define
+ * and paint randomly selected quote
+ ***/
 document.getElementById('load-quote').addEventListener("click", printQuote, false);
+
+//automatically refresh the selected quote and page every 10s
+let refresh = window.setInterval(printQuote, 10000);
